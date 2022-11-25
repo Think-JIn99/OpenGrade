@@ -19,15 +19,18 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    implementation group: 'org.javassist', name: 'javassist', version: '3.15.0-GA'
+    implementation 'com.vladmihalcea:hibernate-types-52:2.20.0'
 }
 
 tasks.named('test') {
