@@ -26,13 +26,16 @@ public class User {
     private int year;
 
     @Column
+    private String department;
+
+    @Column
     private int semester;
 
     @Type(type = "json")
     @Column(columnDefinition = "json")
-    private Map<String, List<String>> grade = new HashMap<>();
+    private Map<String, Map<String, String>> grade = new HashMap<>();
 
     @Column
-    private LocalDateTime time;
+    private LocalDateTime updateTime;
 
 }
