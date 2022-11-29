@@ -4,6 +4,6 @@ import lombok.Setter;
 
 @Setter
 public class LoginResponseDto {
-    private String sToken;
+    private Boolean validate;
 
 }

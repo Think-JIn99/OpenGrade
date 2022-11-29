@@ -3,15 +3,11 @@ package com.opengrade.server.data.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -23,17 +19,13 @@ public class User {
     private Integer id;
 
     @Column
-    private int year;
+    private int currentYear;
+
+    @Column
+    private int currentSemester;
 
     @Column
     private String department;
-
-    @Column
-    private int semester;
-
-    @Type(type = "json")
-    @Column(columnDefinition = "json")
-    private Map<String, Map<String, String>> grade = new HashMap<>();
 
     @Column
     private LocalDateTime updateTime;
