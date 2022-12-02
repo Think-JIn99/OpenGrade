@@ -2,7 +2,8 @@ LOGIN_URL = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp"
 PORTAL_URL = "https://saint.ssu.ac.kr/irj/portal"
 GRADE_URL = 'https://ecc.ssu.ac.kr/sap/bc/webdynpro/sap/ZCMB3W0017'
 SAPTOKEN_URL = "https://saint.ssu.ac.kr/webSSO/sso.jsp?sToken="
-
+YEAR = '2022'
+SEMESTER = '2'
 
 SESSION_HEADERS = {
     'Accept': '*/*',
