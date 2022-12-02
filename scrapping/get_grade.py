@@ -220,7 +220,6 @@ def get_token(id_="", passwd="!"):
     token = login_res.cookies['sToken']
     return token
 
-# "20213118", "rlagustn1!"
 if __name__ == "__main__":
     saint = Saint(get_token("20180806", "kidok0714!"))
     saint._load_grade_page()
