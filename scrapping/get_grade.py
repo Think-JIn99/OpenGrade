@@ -49,6 +49,7 @@ class Saint:
         options.add_argument('--disable-dev-shm-usage') #공유 메모리 사용하지 않음, 속도 개선을 위해
         options.add_argument("--disable-extensions") #크롬 확장 프로그램 사용하지 않음
         options.add_argument('--blink-settings=imagesEnabled=false') # 이미지 로딩하지 않음
+        
         capabilities = DesiredCapabilities().CHROME
         capabilities['pageLoadStarategy'] = 'none'
         return webdriver.Chrome(ChromeDriverManager().install(), options=options, desired_capabilities=capabilities)
@@ -163,11 +164,12 @@ class Saint:
         Args:
             content_selector (str): 컨텐츠 id
         """
-        selector = 'td[class="urSTSStd"][id^="WD0"]'
-        table = self._get_ec_element(EC.presence_of_element_located, By.CSS_SELECTOR, selector)
+        selector = 'tbody[id^="WD0"]' 
+        # table = self._get_ec_element(EC.presence_of_element_located, By.CSS_SELECTOR, selector)
+        table = self.driver.find_elements(By.CSS_SELECTOR, selector)
         def compare_table(driver):
             try:
-                return table != driver.find_element(By.CSS_SELECTOR, selector)  #기존의 테이블과 다를때까지 반복
+                return table != driver.find_elements(By.CSS_SELECTOR, selector)  #기존의 테이블과 다를때까지 반복
             except WebDriverException:
                 pass 
         
@@ -203,9 +205,9 @@ class Saint:
         try:
             #각 요소 선택을 위한 셀렉터
             year_drop_selector = 'input[role="combobox"][value$="년도"]'
-            year_selector = f'div[class~="lsListbox__value"][data-itemkey*="{year}"]'
+            year_selector = f'div[class~="lsListbox__value"][data-itemkey="{year}"]'
             semester_drop_selector = 'input[role="combobox"][value$="학기"]'
-            semester_selector = f'div[class~="lsListbox__value"][data-itemkey*="09{semester}"]'
+            semester_selector = f'div[class~="lsListbox__value"][data-itemkey="09{semester}"]'
             
             #년도와 학기 모두 변경해야하는 경우
             if year != YEAR and semester != SEMESTER:
@@ -214,7 +216,7 @@ class Saint:
                 self._click_ec_element(By.CSS_SELECTOR, ".urPWButtonTable div", ignored_exceptions=[StaleElementReferenceException])
                 
                 #팝업을 닫으면 업데이트가 발생하므로 대기를 진행한다.
-                self.wait_table_updated()
+                # self.wait_table_updated()
                 #테이블만 업데이트 됐다면 바로 진행
                 click_drop_down(semester_drop_selector, semester_selector, ignored_exceptions=[StaleElementReferenceException])
 
@@ -250,7 +252,7 @@ if __name__ == "__main__":
     saint = Saint(get_token())
     saint._load_grade_page()
 
-    page_res = saint._get_grade_page('2020', '0')
+    page_res = saint._get_grade_page('2021', '0')
     # parse.parse_grade(page_res)
 
     # page_res = saint._get_grade_page('2021', '0')
