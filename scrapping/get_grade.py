@@ -43,15 +43,19 @@ class Saint:
             webdriver.Chrome: 브라우저 컨트롤 객체
         """
         options = webdriver.ChromeOptions()
-        # options.add_argument("--headless") #CLI에서 실행
-        options.add_argument('--no-sandbox') #GPU관련 작업 하지 않음
-        options.add_argument('--disable-gpu') #GPU관련 작업 하지 않음
-        options.add_argument('--disable-dev-shm-usage') #공유 메모리 사용하지 않음, 속도 개선을 위해
-        options.add_argument("--disable-extensions") #크롬 확장 프로그램 사용하지 않음
-        options.add_argument('--blink-settings=imagesEnabled=false') # 이미지 로딩하지 않음
-        
+        options.add_argument("headless") #CLI에서 실행
+        options.add_argument('no-sandbox') #GPU관련 작업 하지 않음
+        options.add_argument('disable-gpu') #GPU관련 작업 하지 않음
+        options.add_argument('disable-dev-shm-usage') #공유 메모리 사용하지 않음, 속도 개선을 위해
+        options.add_argument("disable-extensions") #크롬 확장 프로그램 사용하지 않음
+        options.add_argument('blink-settings=imagesEnabled=false') # 이미지 로딩하지 않음
+        options.add_argument("disable-infobars")
         capabilities = DesiredCapabilities().CHROME
         capabilities['pageLoadStarategy'] = 'none'
+
+        prefs = {'profile.default_content_setting_values': {'cookies' : 2, 'images': 2, 'plugins' : 2, 'popups': 2, 'geolocation': 2, 'notifications' : 2, 'auto_select_certificate': 2, 'fullscreen' : 2, 'mouselock' : 2, 'mixed_script': 2, 'media_stream' : 2, 'media_stream_mic' : 2, 'media_stream_camera': 2, 'protocol_handlers' : 2, 'ppapi_broker' : 2, 'automatic_downloads': 2, 'midi_sysex' : 2, 'push_messaging' : 2, 'ssl_cert_decisions': 2, 'metro_switch_to_desktop' : 2, 'protected_media_identifier': 2, 'app_banner': 2, 'site_engagement' : 2, 'durable_storage' : 2}}   
+        options.add_experimental_option('prefs', prefs)
+
         return webdriver.Chrome(ChromeDriverManager().install(), options=options, desired_capabilities=capabilities)
     
 
@@ -196,27 +200,27 @@ class Saint:
         
         #드랍 다운 요소를 클릭하는 함수
         def click_drop_down(drop_down_selector, element_selector, ignored_exceptions=None):
-            #드랍다운 버튼을 클릭한다.
-            self._click_ec_element(By.CSS_SELECTOR, drop_down_selector, ignored_exceptions=ignored_exceptions)
-            #요소를 클릭한다.
-            self._click_ec_element(By.CSS_SELECTOR, element_selector, ignored_exceptions=ignored_exceptions, timeout=5)
-
+            #클릭이 되지 않으면 최대 3번 진행
+            for _ in range(3):
+                #드랍다운 버튼을 클릭한다.
+                drop_down_button = self._click_ec_element(By.CSS_SELECTOR, drop_down_selector, ignored_exceptions=ignored_exceptions, timeout=1)
+                #요소를 클릭한다.
+                element_button = self._click_ec_element(By.CSS_SELECTOR, element_selector, ignored_exceptions=ignored_exceptions, timeout=1)
+                #버튼이 둘다 존재하면 둘다 클릭했으므로 그만한다.
+                if drop_down_button and element_button: break
 
         try:
             #각 요소 선택을 위한 셀렉터
-            year_drop_selector = 'input[role="combobox"][value$="년도"]'
+            year_drop_selector = 'input[role="combobox"][value^="20"]'
             year_selector = f'div[class~="lsListbox__value"][data-itemkey="{year}"]'
+
             semester_drop_selector = 'input[role="combobox"][value$="학기"]'
             semester_selector = f'div[class~="lsListbox__value"][data-itemkey="09{semester}"]'
-            
             #년도와 학기 모두 변경해야하는 경우
             if year != YEAR and semester != SEMESTER:
                 click_drop_down(year_drop_selector, year_selector)
                 #다니지 않은 학기의 성적을 조회하려하면 예외가 발생한다.
                 self._click_ec_element(By.CSS_SELECTOR, ".urPWButtonTable div", ignored_exceptions=[StaleElementReferenceException])
-                
-                #팝업을 닫으면 업데이트가 발생하므로 대기를 진행한다.
-                # self.wait_table_updated()
                 #테이블만 업데이트 됐다면 바로 진행
                 click_drop_down(semester_drop_selector, semester_selector, ignored_exceptions=[StaleElementReferenceException])
 
@@ -230,6 +234,7 @@ class Saint:
                     click_drop_down(semester_drop_selector, semester_selector)
             
             self.wait_table_updated()
+            # self._get_ec_element(EC.presence_of_element_located, "tbody[id^="WD0"] > .rr")
             return self.driver.page_source
 
         except Exception as e:
