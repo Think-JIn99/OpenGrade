@@ -17,17 +17,18 @@ import java.util.Map;
 public class Grade {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer idx;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id")
-    private User id;
+    @JoinColumn(referencedColumnName = "student_id", name = "student_id")
+    private User studentId;
 
     @Column
-    private int year;
+    private String year;
 
     @Column
-    private int semester;
+    private String semester;
 
     @Type(type = "json")
     @Column(columnDefinition = "json")

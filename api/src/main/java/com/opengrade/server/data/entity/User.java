@@ -16,18 +16,29 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    private Integer id;
+    @Column(name = "student_id")
+    private String studentId;
 
     @Column
-    private int currentYear;
+    private String currentYear;
 
     @Column
-    private int currentSemester;
+    private String currentSemester;
 
     @Column
     private String department;
 
     @Column
+    private String apply;
+
+    @Column
+    private String comScore;
+
+    @Column
+    private String softScore;
+
+    @Column
     private LocalDateTime updateTime;
 
 }
+
