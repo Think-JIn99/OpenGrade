@@ -1,12 +1,11 @@
 package com.opengrade.server.service.impl;
 
+import com.opengrade.server.config.security.JwtTokenProvider;
 import com.opengrade.server.data.dto.LoginResponseDto;
-import com.opengrade.server.data.entity.Grade;
 import com.opengrade.server.data.entity.User;
 import com.opengrade.server.data.repository.GradeRepository;
 import com.opengrade.server.data.repository.UserRepository;
 import com.opengrade.server.service.LoginService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,15 +16,23 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @Service
 public class LoginServiceImpl implements LoginService {
 
-    @Autowired
-    GradeRepository gradeRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    private GradeRepository gradeRepository;
+
+    private UserRepository userRepository;
+
+    private JwtTokenProvider jwtTokenProvider;
+
+    LoginServiceImpl(GradeRepository gradeRepository, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.gradeRepository = gradeRepository;
+        this.userRepository = userRepository;
+    }
 
     public String tryLogin(String id, String pw) {
 
@@ -112,7 +119,26 @@ public class LoginServiceImpl implements LoginService {
     }
 
     public void generateNickname(LoginResponseDto loginResponseDto) {
+        HttpHeaders loginHeaders = new HttpHeaders();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
+        HttpEntity<MultiValueMap<String, String>> loginHttpEntity = new HttpEntity<>(params, loginHeaders);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<HashMap> response = restTemplate.exchange(
+                "https://nickname.hwanmoo.kr/?format=json&count=1",
+                HttpMethod.GET,
+                loginHttpEntity,
+                HashMap.class
+        );
+
+        String nickName = response.getBody().get("words").toString();
+        loginResponseDto.setNickName(nickName.substring(1, nickName.length() - 1));
+
+    }
+
+    public void generateToken(LoginResponseDto loginResponseDto, String id) {
+        loginResponseDto.setToken(jwtTokenProvider.createToken(id));
     }
 
     public void saveUser(String id, String tempSemester, String tempYear, String tempDepart) {

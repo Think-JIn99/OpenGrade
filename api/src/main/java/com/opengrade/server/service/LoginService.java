@@ -17,4 +17,6 @@ public interface LoginService {
     public void loadUsaint(LoginResponseDto loginResponseDto);
 
     public void generateNickname(LoginResponseDto loginResponseDto);
+
+    public void generateToken(LoginResponseDto loginResponseDto, String id);
 }
