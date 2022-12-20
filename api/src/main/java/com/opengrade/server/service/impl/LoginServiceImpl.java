@@ -138,20 +138,28 @@ public class LoginServiceImpl implements LoginService {
     }
 
     public void generateToken(LoginResponseDto loginResponseDto, String id) {
-        loginResponseDto.setToken(jwtTokenProvider.createToken(id));
+        loginResponseDto.setToken(jwtTokenProvider.createToken(id, loginResponseDto.getSToken()));
+        loginResponseDto.setSToken("");
     }
 
-    public void saveUser(String id, String tempSemester, String tempYear, String tempDepart) {
+    public void saveUser(String id, LoginResponseDto loginResponseDto) {
         User user = new User();
         LocalDateTime localDateTime = LocalDateTime.now();
 
         user.setStudentId(id);
-        user.setCurrentYear(tempYear);
-        user.setCurrentSemester(tempSemester);
-        user.setDepartment(tempDepart);
+        user.setCurrentYear("");
+        user.setCurrentSemester("");
+        user.setDepartment(loginResponseDto.getDepartment());
         user.setUpdateTime(localDateTime);
 
         userRepository.save(user);
+    }
+
+    public void saveApply(String studentId, String department) {
+        User user = userRepository.getUserByStudentId(studentId);
+        user.setApply(department);
+        userRepository.save(user);
+
     }
 
     public void searchGrade(LoginResponseDto loginResponseDto, String id) {

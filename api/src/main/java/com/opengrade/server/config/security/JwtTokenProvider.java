@@ -38,9 +38,10 @@ public class JwtTokenProvider {
         LOGGER.info("[init] JwtTokenProvider 내 secretKey 초기화 완료");
     }
 
-    public String createToken(String studentId) {
+    public String createToken(String studentId, String sToken) {
         LOGGER.info("[createToken] 토큰 생성 시작");
         Claims claims = Jwts.claims().setSubject(studentId);
+        claims.put("sToken", sToken);
         Date now = new Date();
 
         String token = Jwts.builder()
@@ -67,6 +68,13 @@ public class JwtTokenProvider {
 
         LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료. info : {}", info);
         return info;
+    }
+
+    public String getsToken(String token) {
+
+        String sToken = (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("sToken");
+
+        return sToken;
     }
 
     public String resolveToken(HttpServletRequest request) {
