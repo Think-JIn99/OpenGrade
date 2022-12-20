@@ -3,7 +3,6 @@ package com.opengrade.server.service.impl;
 import com.opengrade.server.config.security.JwtTokenProvider;
 import com.opengrade.server.data.dto.LoginResponseDto;
 import com.opengrade.server.data.entity.User;
-import com.opengrade.server.data.repository.GradeRepository;
 import com.opengrade.server.data.repository.UserRepository;
 import com.opengrade.server.service.LoginService;
 import org.springframework.http.HttpEntity;
@@ -21,16 +20,12 @@ import java.util.HashMap;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-
-    private GradeRepository gradeRepository;
-
     private UserRepository userRepository;
 
     private JwtTokenProvider jwtTokenProvider;
 
-    LoginServiceImpl(GradeRepository gradeRepository, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    LoginServiceImpl(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.gradeRepository = gradeRepository;
         this.userRepository = userRepository;
     }
 
@@ -150,18 +145,17 @@ public class LoginServiceImpl implements LoginService {
         User user = new User();
         LocalDateTime localDateTime = LocalDateTime.now();
 
-        user.setStudentId(id);
-        user.setCurrentYear("");
-        user.setCurrentSemester("");
-        user.setDepartment(loginResponseDto.getDepartment());
+        int tempId = Integer.parseInt(id);
+        user.setStudentId(Integer.valueOf(tempId));
         user.setUpdateTime(localDateTime);
 
         userRepository.save(user);
     }
 
     public void saveApply(String studentId, String department) {
-        User user = userRepository.getUserByStudentId(studentId);
-        user.setApply(department);
+        int tempId = Integer.parseInt(studentId);
+        User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
+        user.setDepartment(department);
         userRepository.save(user);
 
     }
