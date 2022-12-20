@@ -65,7 +65,8 @@ public class LoginServiceImpl implements LoginService {
 
     public void isValidateLogin(String returnToken, LoginResponseDto loginResponseDto) {
 
-        if (returnToken.substring(0,7).equals("sToken=")) {
+        System.out.println(returnToken);
+        if (returnToken.substring(0,7).equals("sToken=") && !returnToken.substring(7, 8).equals(";")) {
             loginResponseDto.setSToken(returnToken.substring(7, returnToken.indexOf(";")));
             loginResponseDto.setLoginValidate(Boolean.TRUE);
         }
@@ -114,6 +115,19 @@ public class LoginServiceImpl implements LoginService {
         }
         else {
             loginResponseDto.setDepartment("");
+        }
+    }
+
+    public Boolean isAlreadyPresentUser(String id, LoginResponseDto loginResponseDto) {
+
+        try {
+            int tempId = Integer.parseInt(id);
+            User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
+
+            loginResponseDto.setNickName(user.getNickname());
+            return Boolean.TRUE;
+        } catch (NullPointerException e) {
+            return Boolean.FALSE;
         }
     }
 
