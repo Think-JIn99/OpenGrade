@@ -31,6 +31,7 @@ public class LoginServiceImpl implements LoginService {
 
         String loginUrl = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp";
 
+        // request의 body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         params.add("in_tp_bit", "0");
@@ -38,11 +39,14 @@ public class LoginServiceImpl implements LoginService {
         params.add("userid", id);
         params.add("pwd", pw);
 
+        //헤더
+        //생성은 하고 add~ 안해도 됨
         HttpHeaders headers = new HttpHeaders();
 
         headers.add("referer", loginUrl);
         headers.add("user-agent", "");
 
+        //바디와 헤더 합치기
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         RestTemplate restTemplate = new RestTemplate();
