@@ -37,9 +37,9 @@ public class LoginController {
         loginService.loadUsaint(loginResponseDto);
 
         // 융특아니면 끝
-//        if (!loginResponseDto.getDepartment().equals("융합특성화자유전공학부")) {
-//            return loginResponseDto;
-//        }
+        if (!loginResponseDto.getDepartment().equals("융합특성화자유전공학부")) {
+            return loginResponseDto;
+        }
 
         loginService.generateNickname(loginResponseDto);
         loginService.generateToken(loginResponseDto, loginDto.getId());
