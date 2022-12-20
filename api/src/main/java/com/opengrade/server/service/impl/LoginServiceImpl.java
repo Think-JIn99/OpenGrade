@@ -147,7 +147,7 @@ public class LoginServiceImpl implements LoginService {
 
         int tempId = Integer.parseInt(id);
         user.setStudentId(Integer.valueOf(tempId));
-        user.setUpdateTime(localDateTime);
+        user.setUpdateDate(localDateTime);
 
         userRepository.save(user);
     }

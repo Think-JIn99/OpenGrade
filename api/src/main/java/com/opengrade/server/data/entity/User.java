@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @Column(name = "student_id", nullable = false)
+    @Column(name = "studentid", nullable = false)
     private Integer studentId;
 
     @Column
@@ -25,13 +25,13 @@ public class User {
     @Column
     private Integer math;
 
-    @Column(name = "bigData")
+    @Column(name = "bigdata")
     private Integer bigData;
 
     @Column
     private Integer programming;
 
-    @Column(name = "businessManagement")
+    @Column(name = "businessmanagement")
     private Integer businessManagement;
 
     @Column(length = 1)
@@ -43,8 +43,8 @@ public class User {
     @Column(name = "soft_score", precision = 3, scale = 2)
     private Float softScore;
 
-    @Column
-    private LocalDateTime updateTime;
+    @Column(name = "updatedate")
+    private LocalDateTime updateDate;
 
 }
 
