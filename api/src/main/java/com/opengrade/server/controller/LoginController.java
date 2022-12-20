@@ -1,5 +1,7 @@
 package com.opengrade.server.controller;
 
+import com.opengrade.server.config.security.JwtTokenProvider;
+import com.opengrade.server.data.dto.ApplyDepartmentDto;
 import com.opengrade.server.data.dto.LoginResponseDto;
 import com.opengrade.server.service.LoginService;
 import com.opengrade.server.data.dto.LoginDto;
@@ -12,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 public class LoginController {
 
     LoginService loginService;
+    JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public LoginController(LoginService loginService) {
+    public LoginController(LoginService loginService, JwtTokenProvider jwtTokenProvider) {
         this.loginService = loginService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
-
 
     @PostMapping(value = "/request")
     public LoginResponseDto loginRequest(@Validated @RequestBody LoginDto loginDto) {
@@ -34,18 +37,26 @@ public class LoginController {
         loginService.loadUsaint(loginResponseDto);
 
         // 융특아니면 끝
-        if (!loginResponseDto.getDepartment().equals("융합특성화자유전공학부")) {
-            return loginResponseDto;
-        }
+//        if (!loginResponseDto.getDepartment().equals("융합특성화자유전공학부")) {
+//            return loginResponseDto;
+//        }
 
         loginService.generateNickname(loginResponseDto);
+        loginService.generateToken(loginResponseDto, loginDto.getId());
 
+        loginService.saveUser(loginDto.getId(), loginResponseDto);
         return loginResponseDto;
 
     }
+
+    @PostMapping("/apply")
+    public void applyDepartment(@RequestHeader String jwtToken,
+                                @Validated @RequestBody ApplyDepartmentDto applyDepartmentDto) {
+        String studentId = jwtTokenProvider.getUsername(jwtToken);
+        loginService.saveApply(studentId, applyDepartmentDto.getDepartment());
+    }
 }
 
-    // 지망 학과 받기
 
 
     //성적 조회

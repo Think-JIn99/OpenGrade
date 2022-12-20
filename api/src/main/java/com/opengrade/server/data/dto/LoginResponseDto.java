@@ -1,6 +1,5 @@
 package com.opengrade.server.data.dto;
 
-import com.opengrade.server.data.entity.Grade;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +11,6 @@ public class LoginResponseDto {
     private String sToken;
     private String department;
     private String nickName;
+    private String Token;
 
 }

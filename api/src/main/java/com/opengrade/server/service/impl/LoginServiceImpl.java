@@ -1,12 +1,11 @@
 package com.opengrade.server.service.impl;
 
+import com.opengrade.server.config.security.JwtTokenProvider;
 import com.opengrade.server.data.dto.LoginResponseDto;
-import com.opengrade.server.data.entity.Grade;
 import com.opengrade.server.data.entity.User;
 import com.opengrade.server.data.repository.GradeRepository;
 import com.opengrade.server.data.repository.UserRepository;
 import com.opengrade.server.service.LoginService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,20 +16,29 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @Service
 public class LoginServiceImpl implements LoginService {
 
-    @Autowired
-    GradeRepository gradeRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    private GradeRepository gradeRepository;
+
+    private UserRepository userRepository;
+
+    private JwtTokenProvider jwtTokenProvider;
+
+    LoginServiceImpl(GradeRepository gradeRepository, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.gradeRepository = gradeRepository;
+        this.userRepository = userRepository;
+    }
 
     public String tryLogin(String id, String pw) {
 
         String loginUrl = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp";
 
+        // request의 body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         params.add("in_tp_bit", "0");
@@ -38,11 +46,14 @@ public class LoginServiceImpl implements LoginService {
         params.add("userid", id);
         params.add("pwd", pw);
 
+        //헤더
+        //생성은 하고 add~ 안해도 됨
         HttpHeaders headers = new HttpHeaders();
 
         headers.add("referer", loginUrl);
         headers.add("user-agent", "");
 
+        //바디와 헤더 합치기
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -112,20 +123,47 @@ public class LoginServiceImpl implements LoginService {
     }
 
     public void generateNickname(LoginResponseDto loginResponseDto) {
+        HttpHeaders loginHeaders = new HttpHeaders();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
+        HttpEntity<MultiValueMap<String, String>> loginHttpEntity = new HttpEntity<>(params, loginHeaders);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<HashMap> response = restTemplate.exchange(
+                "https://nickname.hwanmoo.kr/?format=json&count=1",
+                HttpMethod.GET,
+                loginHttpEntity,
+                HashMap.class
+        );
+
+        String nickName = response.getBody().get("words").toString();
+        loginResponseDto.setNickName(nickName.substring(1, nickName.length() - 1));
 
     }
 
-    public void saveUser(String id, String tempSemester, String tempYear, String tempDepart) {
+    public void generateToken(LoginResponseDto loginResponseDto, String id) {
+        loginResponseDto.setToken(jwtTokenProvider.createToken(id, loginResponseDto.getSToken()));
+        loginResponseDto.setSToken("");
+    }
+
+    public void saveUser(String id, LoginResponseDto loginResponseDto) {
         User user = new User();
         LocalDateTime localDateTime = LocalDateTime.now();
 
         user.setStudentId(id);
-        user.setCurrentYear(tempYear);
-        user.setCurrentSemester(tempSemester);
-        user.setDepartment(tempDepart);
+        user.setCurrentYear("");
+        user.setCurrentSemester("");
+        user.setDepartment(loginResponseDto.getDepartment());
         user.setUpdateTime(localDateTime);
 
         userRepository.save(user);
+    }
+
+    public void saveApply(String studentId, String department) {
+        User user = userRepository.getUserByStudentId(studentId);
+        user.setApply(department);
+        userRepository.save(user);
+
     }
 
     public void searchGrade(LoginResponseDto loginResponseDto, String id) {
