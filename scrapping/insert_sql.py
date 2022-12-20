@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -26,23 +26,25 @@ class User(Base):
     programming = Column(Integer)
     businessManagement= Column(Integer)
     department = Column(String)
-    score = Column(Integer)
+    com_score = Column(Float)
+    soft_score = Column(Float)
     updateDate = Column(DateTime)
 
 
-    def __init__(self, student_id, phl, math, big_data, programming, business_mangement, department, score, update_date):
+    def __init__(self, student_id, phl, math, big_data, programming, business_management, department, com_score, soft_score, update_date):
         self.studentId = student_id
         self.phl = phl
         self.math = math
         self.bigData = big_data
         self.programming = programming
-        self.businessManagement = business_mangement
+        self.businessManagement = business_management
         self.department = department
-        self.score = score
+        self.com_score = com_score
+        self.soft_score = soft_score
         self.updateDate = update_date
 
 
-def insert_data(student_id, phl, math, big_data, programming, business_management, department, score, update_date):
+def insert_data_db(insert_data:dict):
     """
     DB 유저 테이블에 데이터를 삽입합니다.
 
@@ -61,8 +63,8 @@ def insert_data(student_id, phl, math, big_data, programming, business_managemen
         _type_: _description_
     """
     #gcp 유저와 비밀번호
-    engine = create_engine(f"mysql+pymysql://<myuser>:<mypassword>@34.64.94.74:3306/grade", encoding='utf-8')
-    user = User(student_id, phl, math, big_data, programming, business_management, department, score, update_date)
+    engine = create_engine(f"mysql+pymysql://root:<my_pass>@34.64.94.74:3306/grade", encoding='utf-8')
+    user = User(**insert_data)
     session = Session(engine) #세션을 생성
     session.add(user) #세션에 SQL을 추가
     try:
@@ -83,6 +85,7 @@ if __name__ == "__main__":
     now = datetime.datetime.now() #현재시각
     
     #더미 데이터 입니다.
-    user = insert_data(student_id = 20211305, phl=100, math=90, big_data=88, programming=97, \
-                business_management=97, department='컴', score=0, update_date=now)
+    insert_data = {'student_id':20191305, 'phl':97, 'math':95, 'big_data':93, 'programming':90, 'business_management':88, 
+    'department':"컴", 'com_score':0, 'soft_score':0, 'update_date':now}
+    user = insert_data_db(insert_data)
     
