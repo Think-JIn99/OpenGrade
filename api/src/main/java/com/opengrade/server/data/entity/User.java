@@ -46,5 +46,8 @@ public class User {
     @Column(name = "updatedate")
     private LocalDateTime updateDate;
 
+    @Column(name = "nickname")
+    private String nickname;
+
 }
 
