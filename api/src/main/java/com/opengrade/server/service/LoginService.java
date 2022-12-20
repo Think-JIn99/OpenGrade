@@ -21,4 +21,7 @@ public interface LoginService {
     public void generateToken(LoginResponseDto loginResponseDto, String id);
 
     public void saveApply(String studentId, String department);
+
+    public Boolean isAlreadyPresentUser(String id, LoginResponseDto loginResponseDto);
 }
+
