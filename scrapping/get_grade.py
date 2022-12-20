@@ -12,7 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager #크롬 웹 브라우�
 
 from constant import * 
 import parse
-from user import * #user id
+# from user import * #user id
 import time
 
 class Saint:
@@ -43,7 +43,7 @@ class Saint:
             webdriver.Chrome: 브라우저 컨트롤 객체
         """
         options = webdriver.ChromeOptions()
-        options.add_argument("headless") #CLI에서 실행
+        # options.add_argument("headless") #CLI에서 실행
         options.add_argument('no-sandbox') #GPU관련 작업 하지 않음
         options.add_argument('disable-gpu') #GPU관련 작업 하지 않음
         options.add_argument('disable-dev-shm-usage') #공유 메모리 사용하지 않음, 속도 개선을 위해
@@ -53,8 +53,8 @@ class Saint:
         capabilities = DesiredCapabilities().CHROME
         capabilities['pageLoadStarategy'] = 'none'
 
-        prefs = {'profile.default_content_setting_values': {'cookies' : 2, 'images': 2, 'plugins' : 2, 'popups': 2, 'geolocation': 2, 'notifications' : 2, 'auto_select_certificate': 2, 'fullscreen' : 2, 'mouselock' : 2, 'mixed_script': 2, 'media_stream' : 2, 'media_stream_mic' : 2, 'media_stream_camera': 2, 'protocol_handlers' : 2, 'ppapi_broker' : 2, 'automatic_downloads': 2, 'midi_sysex' : 2, 'push_messaging' : 2, 'ssl_cert_decisions': 2, 'metro_switch_to_desktop' : 2, 'protected_media_identifier': 2, 'app_banner': 2, 'site_engagement' : 2, 'durable_storage' : 2}}   
-        options.add_experimental_option('prefs', prefs)
+        # prefs = {'profile.default_content_setting_values': {'cookies' : 2, 'images': 2, 'plugins' : 2, 'popups': 2, 'geolocation': 2, 'notifications' : 2, 'auto_select_certificate': 2, 'fullscreen' : 2, 'mouselock' : 2, 'mixed_script': 2, 'media_stream' : 2, 'media_stream_mic' : 2, 'media_stream_camera': 2, 'protocol_handlers' : 2, 'ppapi_broker' : 2, 'automatic_downloads': 2, 'midi_sysex' : 2, 'push_messaging' : 2, 'ssl_cert_decisions': 2, 'metro_switch_to_desktop' : 2, 'protected_media_identifier': 2, 'app_banner': 2, 'site_engagement' : 2, 'durable_storage' : 2}}   
+        # options.add_experimental_option('prefs', prefs)
 
         return webdriver.Chrome(ChromeDriverManager().install(), options=options, desired_capabilities=capabilities)
     
@@ -183,7 +183,7 @@ class Saint:
         except TimeoutException:
             print('Content Not loaded')
             return
-
+        
 
     def _get_grade_page(self, year:str, semester:str):
         """
@@ -239,10 +239,39 @@ class Saint:
 
         except Exception as e:
             print("main", e)
+            
+    def _get_grade_page_year(self):
+        def click_drop_down(drop_down_selector, element_selector, ignored_exceptions=None):
+                #클릭이 되지 않으면 최대 3번 진행
+                for _ in range(3):
+                    #드랍다운 버튼을 클릭한다.
+                    drop_down_button = self._click_ec_element(By.CSS_SELECTOR, drop_down_selector, ignored_exceptions=ignored_exceptions, timeout=1)
+                    #요소를 클릭한다.
+                    element_button = self._click_ec_element(By.CSS_SELECTOR, element_selector, ignored_exceptions=ignored_exceptions, timeout=1)
+                    #버튼이 둘다 존재하면 둘다 클릭했으므로 그만한다.
+                    if drop_down_button and element_button: break
+        try:
+            semester_drop_selector = 'input[role="combobox"][value$="학기"]'
+            first_semester_selector = f'div[class~="lsListbox__value"][data-itemkey="090"]'
+            self.wait_table_updated()
+            second_semester_page_source=self.driver.page_source #2학기 성적은 변동이 필요없으므로 바로 받아온다.
+            click_drop_down(semester_drop_selector, first_semester_selector)
+            self.wait_table_updated()
+            first_semester_page_source=self.driver.page_source
+
+            return(first_semester_page_source,second_semester_page_source)
+        except Exception as e:
+            print("main", e)
+
+
+
+
+    
+
 
 
 #userid 입력 필요
-def get_token(id_=USER_ID, passwd=PASSWD):
+def get_token(id_:str, passwd:str):
     login_url = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp"
     user_data = {
         "userid": id_,
@@ -253,18 +282,18 @@ def get_token(id_=USER_ID, passwd=PASSWD):
     return token
 
 
-if __name__ == "__main__":
-    saint = Saint(get_token())
-    saint._load_grade_page()
+# if __name__ == "__main__":
+#     saint = Saint(get_token())
+#     saint._load_grade_page()
 
-    page_res = saint._get_grade_page('2021', '0')
-    # parse.parse_grade(page_res)
+#     page_res = saint._get_grade_page('2021', '2')
+#     # parse.parse_grade(page_res)
 
-    # page_res = saint._get_grade_page('2021', '0')
-    parse.parse_grade(page_res)
+#     # page_res = saint._get_grade_page('2021', '0')
+#     parse.parse_grade(page_res)
 
-    # page_res = saint._get_grade_page('2022', '1')
-    # parse.parse_grade(page_res)
-    # saint.session.get("https://ecc.ssu.ac.kr:8443/sap/public/bc/icf/logoff")
+#     # page_res = saint._get_grade_page('2022', '1')
+#     # parse.parse_grade(page_res)
+#     # saint.session.get("https://ecc.ssu.ac.kr:8443/sap/public/bc/icf/logoff")
 
-    saint._close_connection()
+#     saint._close_connection()
