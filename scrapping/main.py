@@ -1,3 +1,5 @@
+# This Python file uses the following encoding: utf-8
+
 from typing import Union,Optional
 from fastapi import FastAPI
 import requests
@@ -14,6 +16,10 @@ class Item(BaseModel):
     passwd: str
     year: str
     semester: str
+
+class Key(BaseModel):
+    id_: str
+    sToken: str
 
 app = FastAPI()
 
@@ -48,21 +54,25 @@ def get_token(item:Item):
     return grade
 
 @app.post("/gradeTwo/")
-def get_token(item:Item):
+def get_token(token:Key):
 
-    login_url = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp"
-    user_data = {
-        "userid": item.id_,
-        "pwd": item.passwd
-    }
-    login_res = requests.post(login_url, data=user_data)
-    token = login_res.cookies['sToken']
-    saint=get_grade.Saint(token)
+    # login_url = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp"
+    # user_data = {
+    #     "userid": item.id_,
+    #     "pwd": item.passwd
+    # }
+    # login_res = requests.post(login_url, data=user_data)
+    # token = login_res.cookies['sToken']
+    saint=get_grade.Saint(token.sToken)
     saint._load_grade_page()
 
     page_res_tuple=saint._get_grade_page_year()
     saint._close_connection()
     grade_first=parse.parse_grade(page_res_tuple[0])
     grade_second=parse.parse_grade(page_res_tuple[1])
+    grade_first.extend(grade_second)
 
-    return [grade_first,grade_second]
+    sumbject_names = ['21507500', '21507501', '21500361',"21500364",'21500363']
+
+    grade_infos = [grade for grade in grade_first if grade['과목코드'] in sumbject_names]
+    return grade_infos
