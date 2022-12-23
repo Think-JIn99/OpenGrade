@@ -27,7 +27,7 @@ public class ScrappingRequestController {
     }
 
     @PostMapping(value = "/request")
-    public void ScrappingRequest(@RequestHeader String jwtToken){
+    public void ScrappingRequest(@RequestHeader String jwtToken) {
 
         String studentId = jwtTokenProvider.getUsername(jwtToken);
         String sToken = jwtTokenProvider.getsToken(jwtToken);
@@ -38,25 +38,8 @@ public class ScrappingRequestController {
             scrappingRequestService.postRequest(studentId, sToken);
         }
 
-
-        String scrappingUrl = "";
-
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("sToken", sToken);
-
-            HttpHeaders headers = new HttpHeaders();
-
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
-
-            RestTemplate restTemplate = new RestTemplate();
-
-            ResponseEntity<String> response = restTemplate.exchange(
-                    scrappingUrl,
-                    HttpMethod.POST,
-                    entity,
-                    String.class
-            );
-
-        }
     }
+
+
+}
 
