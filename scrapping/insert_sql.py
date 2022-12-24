@@ -64,9 +64,11 @@ def insert_data_db(insert_data:dict):
     """
     #gcp 유저와 비밀번호
     engine = create_engine(f"mysql+pymysql://root:<my_pass>@34.64.94.74:3306/grade", encoding='utf-8')
-    user = User(**insert_data)
+    # user = User(**insert_data)
     session = Session(engine) #세션을 생성
-    session.add(user) #세션에 SQL을 추가
+    # session.add(user) #세션에 SQL을 추가
+    a=session.query(User).filter(User.studentId==f"{insert_data['student_id']}").update({User.bigData:insert_data["big_data"],User.businessManagement:insert_data["business_management"],User.math:insert_data["math"],User.phl:insert_data["phl"],User.programming:insert_data["programming"],User.updateDate:insert_data["update_date"],User.com_score:insert_data["com_score"],User.soft_score:insert_data["soft_score"]})
+
     try:
         session.commit() #SQL 디비에 전송
         session.close()
