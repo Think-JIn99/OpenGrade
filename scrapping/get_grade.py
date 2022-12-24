@@ -253,11 +253,18 @@ class Saint:
         try:
             semester_drop_selector = 'input[role="combobox"][value$="학기"]'
             first_semester_selector = f'div[class~="lsListbox__value"][data-itemkey="090"]'
+            second_semester_selector= 'div[class~="lsListbox__value"][data-itemkey="092"]' 
+            # self.wait_table_updated()
+            #겨울학기 이슈
+            # second_semester_page_source=self.driver.page_source 
+            click_drop_down(semester_drop_selector, second_semester_selector)
+
             self.wait_table_updated()
-            second_semester_page_source=self.driver.page_source #2학기 성적은 변동이 필요없으므로 바로 받아온다.
+            second_semester_page_source=self.driver.page_source #2학기 성적
+
             click_drop_down(semester_drop_selector, first_semester_selector)
             self.wait_table_updated()
-            first_semester_page_source=self.driver.page_source
+            first_semester_page_source=self.driver.page_source # 1학기 성적
 
             return(first_semester_page_source,second_semester_page_source)
         except Exception as e:

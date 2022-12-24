@@ -34,7 +34,7 @@ def read_root():
 #     return {"item_id": item_id, "q": q}
 
 #uvicorn main:app --host=0.0.0.0 --port=8080
-@app.post("/grade/")
+@app.post("/grade/semester")
 def get_token(item:Item):
 
     login_url = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp"
@@ -53,7 +53,7 @@ def get_token(item:Item):
 
     return grade
 
-@app.post("/gradeTwo/")
+@app.post("/grade/year")
 def get_token(token:Key):
 
     # login_url = "https://smartid.ssu.ac.kr/Symtra_sso/smln_pcs.asp"
@@ -72,7 +72,9 @@ def get_token(token:Key):
     grade_second=parse.parse_grade(page_res_tuple[1])
     grade_first.extend(grade_second)
 
-    sumbject_names = ['21507500', '21507501', '21500361',"21500364",'21500363']
+    # sumbject_names = ['21507500', '21507501', '21500361',"21500364",'21500363']
+    subject_names = ['PHL', '융합전공을위한수학', '빅데이터프로그래밍언어',"프로그래밍및실습",'프로그래밍및실습']
 
-    grade_infos = [grade for grade in grade_first if grade['과목코드'] in sumbject_names]
+
+    grade_infos = [grade for grade in grade_first if grade['과목명'] in subject_names]
     return grade_infos
