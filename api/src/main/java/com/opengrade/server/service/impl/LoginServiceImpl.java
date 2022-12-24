@@ -3,7 +3,6 @@ package com.opengrade.server.service.impl;
 import com.opengrade.server.config.security.JwtTokenProvider;
 import com.opengrade.server.data.dto.LoginResponseDto;
 import com.opengrade.server.data.entity.User;
-import com.opengrade.server.data.repository.GradeRepository;
 import com.opengrade.server.data.repository.UserRepository;
 import com.opengrade.server.service.LoginService;
 import org.springframework.http.HttpEntity;
@@ -21,16 +20,12 @@ import java.util.HashMap;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-
-    private GradeRepository gradeRepository;
-
     private UserRepository userRepository;
 
     private JwtTokenProvider jwtTokenProvider;
 
-    LoginServiceImpl(GradeRepository gradeRepository, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    LoginServiceImpl(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.gradeRepository = gradeRepository;
         this.userRepository = userRepository;
     }
 
@@ -70,7 +65,8 @@ public class LoginServiceImpl implements LoginService {
 
     public void isValidateLogin(String returnToken, LoginResponseDto loginResponseDto) {
 
-        if (returnToken.substring(0,7).equals("sToken=")) {
+        System.out.println(returnToken);
+        if (returnToken.substring(0,7).equals("sToken=") && !returnToken.substring(7, 8).equals(";")) {
             loginResponseDto.setSToken(returnToken.substring(7, returnToken.indexOf(";")));
             loginResponseDto.setLoginValidate(Boolean.TRUE);
         }
@@ -122,6 +118,19 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
+    public Boolean isAlreadyPresentUser(String id, LoginResponseDto loginResponseDto) {
+
+        try {
+            int tempId = Integer.parseInt(id);
+            User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
+
+            loginResponseDto.setNickName(user.getNickname());
+            return Boolean.TRUE;
+        } catch (NullPointerException e) {
+            return Boolean.FALSE;
+        }
+    }
+
     public void generateNickname(LoginResponseDto loginResponseDto) {
         HttpHeaders loginHeaders = new HttpHeaders();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -150,18 +159,18 @@ public class LoginServiceImpl implements LoginService {
         User user = new User();
         LocalDateTime localDateTime = LocalDateTime.now();
 
-        user.setStudentId(id);
-        user.setCurrentYear("");
-        user.setCurrentSemester("");
-        user.setDepartment(loginResponseDto.getDepartment());
-        user.setUpdateTime(localDateTime);
+        int tempId = Integer.parseInt(id);
+        user.setStudentId(Integer.valueOf(tempId));
+        user.setUpdateDate(localDateTime);
+        user.setNickname(loginResponseDto.getNickName());
 
         userRepository.save(user);
     }
 
     public void saveApply(String studentId, String department) {
-        User user = userRepository.getUserByStudentId(studentId);
-        user.setApply(department);
+        int tempId = Integer.parseInt(studentId);
+        User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
+        user.setDepartment(department);
         userRepository.save(user);
 
     }

@@ -37,9 +37,18 @@ public class LoginController {
         loginService.loadUsaint(loginResponseDto);
 
         // 융특아니면 끝
-//        if (!loginResponseDto.getDepartment().equals("융합특성화자유전공학부")) {
-//            return loginResponseDto;
-//        }
+        if (!loginResponseDto.getDepartment().equals("융합특성화자유전공학부")) {
+            loginResponseDto.setSToken("");
+            return loginResponseDto;
+        }
+
+        Boolean isPresent = loginService.isAlreadyPresentUser(loginDto.getId(), loginResponseDto);
+
+        // 기존 회원은 여기서 끝
+        if (isPresent == Boolean.TRUE) {
+            loginService.generateToken(loginResponseDto, loginDto.getId());
+            return loginResponseDto;
+        }
 
         loginService.generateNickname(loginResponseDto);
         loginService.generateToken(loginResponseDto, loginDto.getId());

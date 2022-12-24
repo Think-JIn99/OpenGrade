@@ -16,29 +16,38 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @Column(name = "student_id")
-    private String studentId;
+    @Column(name = "studentid", nullable = false)
+    private Integer studentId;
 
     @Column
-    private String currentYear;
+    private Integer phl;
 
     @Column
-    private String currentSemester;
+    private Integer math;
+
+    @Column(name = "bigdata")
+    private Integer bigData;
 
     @Column
+    private Integer programming;
+
+    @Column(name = "businessmanagement")
+    private Integer businessManagement;
+
+    @Column(length = 1)
     private String department;
 
-    @Column
-    private String apply;
+    @Column(name = "com_score", precision = 3, scale = 2)
+    private Float comScore;
 
-    @Column
-    private String comScore;
+    @Column(name = "soft_score", precision = 3, scale = 2)
+    private Float softScore;
 
-    @Column
-    private String softScore;
+    @Column(name = "updatedate")
+    private LocalDateTime updateDate;
 
-    @Column
-    private LocalDateTime updateTime;
+    @Column(name = "nickname")
+    private String nickname;
 
 }
 
