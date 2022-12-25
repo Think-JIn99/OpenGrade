@@ -10,11 +10,16 @@ public interface LoginService {
 
     public void isValidateLogin(String returnToken, LoginResponseDto loginResponseDto);
 
-    public void searchGrade(LoginResponseDto loginResponseDto, String id);
-
-    public void saveUser(String id, String tempSemester, String tempYear, String tempDepart);
+    public void saveUser(String id, LoginResponseDto loginResponseDto);
 
     public void loadUsaint(LoginResponseDto loginResponseDto);
 
     public void generateNickname(LoginResponseDto loginResponseDto);
+
+    public void generateToken(LoginResponseDto loginResponseDto, String id);
+
+    public void saveApply(String studentId, String department);
+
+    public Boolean isAlreadyPresentUser(String id, LoginResponseDto loginResponseDto);
 }
+
