@@ -66,11 +66,3 @@ public class LoginController {
     }
 }
 
-
-
-    //성적 조회
-    //loginService.saveUser(loginDto.getId(), tempSemester, tempYear, tempDepart);
-    //loginService.searchGrade(loginResponseDto, loginDto.getId());
-    //return loginResponseDto;
-
-

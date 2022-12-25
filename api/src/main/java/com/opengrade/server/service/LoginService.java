@@ -10,8 +10,6 @@ public interface LoginService {
 
     public void isValidateLogin(String returnToken, LoginResponseDto loginResponseDto);
 
-    public void searchGrade(LoginResponseDto loginResponseDto, String id);
-
     public void saveUser(String id, LoginResponseDto loginResponseDto);
 
     public void loadUsaint(LoginResponseDto loginResponseDto);

@@ -175,12 +175,4 @@ public class LoginServiceImpl implements LoginService {
 
     }
 
-    public void searchGrade(LoginResponseDto loginResponseDto, String id) {
-//        User user = userRepository.getUserByStudentId(id);
-//        Grade grade = gradeRepository.getGradeByStudentIdAndSemesterAndYear(id, user.getCurrentSemester(), user.getCurrentYear());
-//        if (grade.getGrade().isEmpty()){
-//            //셀레니움에 post보내서 성적 받아오기
-//        }
-//        loginResponseDto.setGrade(grade);
-    }
 }

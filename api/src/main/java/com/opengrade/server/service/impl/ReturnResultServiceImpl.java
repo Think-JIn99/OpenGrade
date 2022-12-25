@@ -25,9 +25,8 @@ public class ReturnResultServiceImpl implements ReturnResultService {
         User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
         rankingDto.setNickname(user.getNickname());
 
-        if (department.equals("com")) {
+        if (department.equals("C")) {
 
-            department = "컴";
             Comparator<User> comparator = new Comparator<User>() {
                 @Override
                 public int compare(User a, User b) {
@@ -36,12 +35,10 @@ public class ReturnResultServiceImpl implements ReturnResultService {
             };
 
             List<User> allGrade = userRepository.findAll();
-            //List<User> allGrade = userRepository.findAllByDepartment(department);
             allGrade.sort(comparator);
             rankingDto.setAllUsers(allGrade);
-        } else if (department.equals("soft")) {
+        } else if (department.equals("S")) {
 
-            department = "솦";
             Comparator<User> comparator = new Comparator<User>() {
                 @Override
                 public int compare(User a, User b) {
@@ -50,7 +47,6 @@ public class ReturnResultServiceImpl implements ReturnResultService {
             };
 
             List<User> allGrade = userRepository.findAll();
-            //List<User> allGrade = userRepository.findAllByDepartment(department);
             allGrade.sort(comparator);
             rankingDto.setAllUsers(allGrade);
 
@@ -63,9 +59,8 @@ public class ReturnResultServiceImpl implements ReturnResultService {
         User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
         rankingDto.setNickname(user.getNickname());
 
-        if (department.equals("com")) {
+        if (department.equals("C")) {
 
-            department = "컴";
             Comparator<User> comparator = new Comparator<User>() {
                 @Override
                 public int compare(User a, User b) {
@@ -76,9 +71,8 @@ public class ReturnResultServiceImpl implements ReturnResultService {
             List<User> allGrade = userRepository.findAllByDepartment(department);
             allGrade.sort(comparator);
             rankingDto.setAllUsers(allGrade);
-        } else if (department.equals("soft")) {
+        } else if (department.equals("S")) {
 
-            department = "솦";
             Comparator<User> comparator = new Comparator<User>() {
                 @Override
                 public int compare(User a, User b) {
