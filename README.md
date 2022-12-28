@@ -12,7 +12,6 @@
   </tr>
   <tr align="center">
       <td><img src="https://github.com/rover0811.png" width="150"></td>
-
     <td><img src="https://github.com/Think-JIn99.png" width="150"></td>
     <td><img src="https://github.com/k0000k.png" width="150"></td>
 
