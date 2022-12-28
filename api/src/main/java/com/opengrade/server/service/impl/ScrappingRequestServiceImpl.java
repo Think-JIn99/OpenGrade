@@ -24,12 +24,14 @@ public class ScrappingRequestServiceImpl implements ScrappingRequestService {
         int tempId = Integer.parseInt(id);
         User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
 
-        try {
-            Integer mathGrade = user.getMath();
+        Integer mathGrade = user.getMath();
+
+        if (mathGrade != null) {
             return Boolean.TRUE;
-        } catch (NullPointerException e) {
+        } else {
             return Boolean.FALSE;
         }
+
     }
 
     public String postRequest(String id, String sToken) {
