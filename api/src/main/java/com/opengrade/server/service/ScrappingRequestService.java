@@ -8,6 +8,6 @@ public interface ScrappingRequestService {
 
     public Boolean verifyGrade(String id);
 
-    public void postRequest(String id, String sToken);
+    public String postRequest(String id, String sToken);
 
 }
