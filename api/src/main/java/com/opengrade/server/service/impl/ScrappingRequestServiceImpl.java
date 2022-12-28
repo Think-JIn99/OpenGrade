@@ -36,8 +36,8 @@ public class ScrappingRequestServiceImpl implements ScrappingRequestService {
         String scrappingUrl = "http://34.64.211.170:8080/grade/year";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("id_", id);
         params.add("sToken", sToken);
-        params.add("studentId", id);
 
         HttpHeaders headers = new HttpHeaders();
 
