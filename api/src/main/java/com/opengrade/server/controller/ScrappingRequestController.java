@@ -1,6 +1,7 @@
 package com.opengrade.server.controller;
 
 import com.opengrade.server.config.security.JwtTokenProvider;
+import com.opengrade.server.data.dto.ScrappingResponseDto;
 import com.opengrade.server.data.repository.UserRepository;
 import com.opengrade.server.service.ScrappingRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,9 @@ public class ScrappingRequestController {
     }
 
     @PostMapping(value = "/request")
-    public void ScrappingRequest(@RequestHeader String jwtToken) {
+    public ScrappingResponseDto ScrappingRequest(@RequestHeader String jwtToken) {
+
+        ScrappingResponseDto scrappingResponseDto = new ScrappingResponseDto();
 
         String studentId = jwtTokenProvider.getUsername(jwtToken);
         String sToken = jwtTokenProvider.getsToken(jwtToken);
@@ -35,9 +38,13 @@ public class ScrappingRequestController {
         Boolean isPresent = scrappingRequestService.verifyGrade(studentId);
 
         if (isPresent == Boolean.FALSE) {
-            scrappingRequestService.postRequest(studentId, sToken);
+            String message = scrappingRequestService.postRequest(studentId, sToken);
+            scrappingResponseDto.setMessage(message);
+            return scrappingResponseDto;
         }
 
+        scrappingResponseDto.setMessage("success");
+        return scrappingResponseDto;
     }
 
 }

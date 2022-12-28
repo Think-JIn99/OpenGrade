@@ -32,7 +32,7 @@ public class ScrappingRequestServiceImpl implements ScrappingRequestService {
         }
     }
 
-    public void postRequest(String id, String sToken) {
+    public String postRequest(String id, String sToken) {
         String scrappingUrl = "http://34.64.211.170:8080/grade/year";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -51,5 +51,7 @@ public class ScrappingRequestServiceImpl implements ScrappingRequestService {
                 entity,
                 String.class
         );
+
+        return response.getBody();
     }
 }
