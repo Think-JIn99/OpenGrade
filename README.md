@@ -7,8 +7,8 @@
 <table align="center">
   <tr align="center">
       <td><a href="https://github.com/rover0811">김현수</a></td>
-    <td><a href="https://github.com/Think-JIn99">정명진</a></td>
-    <td><a href="https://github.com/k0000k">국혜경</a></td>
+      <td><a href="https://github.com/Think-JIn99">정명진</a></td>
+      <td><a href="https://github.com/k0000k">국혜경</a></td>
   </tr>
   <tr align="center">
       <td><img src="https://github.com/rover0811.png" width="150"></td>
