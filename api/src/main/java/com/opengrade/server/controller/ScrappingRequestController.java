@@ -43,7 +43,7 @@ public class ScrappingRequestController {
             return scrappingResponseDto;
         }
 
-        scrappingResponseDto.setMessage("success");
+        //scrappingResponseDto.setMessage("success");
         return scrappingResponseDto;
     }
 

@@ -24,20 +24,22 @@ public class ScrappingRequestServiceImpl implements ScrappingRequestService {
         int tempId = Integer.parseInt(id);
         User user = userRepository.getUserByStudentId(Integer.valueOf(tempId));
 
-        try {
-            Integer mathGrade = user.getMath();
+        Integer mathGrade = user.getMath();
+
+        if (mathGrade != null) {
             return Boolean.TRUE;
-        } catch (NullPointerException e) {
+        } else {
             return Boolean.FALSE;
         }
+
     }
 
     public String postRequest(String id, String sToken) {
         String scrappingUrl = "http://34.64.211.170:8080/grade/year";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("id_", id);
         params.add("sToken", sToken);
-        params.add("studentId", id);
 
         HttpHeaders headers = new HttpHeaders();
 

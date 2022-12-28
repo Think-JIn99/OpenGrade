@@ -37,6 +37,7 @@ public class ReturnResultServiceImpl implements ReturnResultService {
             List<User> allGrade = userRepository.findAll();
             allGrade.sort(comparator);
             rankingDto.setAllUsers(allGrade);
+
         } else if (department.equals("S")) {
 
             Comparator<User> comparator = new Comparator<User>() {
